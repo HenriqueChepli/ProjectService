@@ -1,3 +1,40 @@
+<script setup>
+import { ref, onMounted } from 'vue';
+import api from '../plugins/axios'
+
+const movies = ref([
+  {
+    id:1
+  },
+  {
+    id:2
+  },
+  {
+    id:3
+  },
+  {
+    id:4
+  },
+  {
+    id:5
+  },
+  {
+    id:6
+  },
+  {
+    id:7
+  },
+  {
+    id:8
+  },
+]);
+const genres = ref([]);
+
+onMounted(async () => {
+  const response = await api.get('genre/movie/list?language=pt-BR');
+  genres.value = response.data.genres;
+});
+</script>
 <template>
   <main>
     <div id="banner">
@@ -13,6 +50,16 @@
       <div class="buttonsHome">
         <button><img src="#" alt=">">Play</button>
         <button><img src="#" alt="#">Mais Info</button>
+      </div>
+      <div class="carrocelHome">
+        <div class="carrocelTitle">
+          <h3>Popular no AlMossar Studios</h3>
+        </div>
+        <div class="carrocelProduct">
+          <div class="product"  v-for="movie in movies" :key="movie.id" >
+            <img :src="`https://image.tmdb.org/t/p/${w342}/${movie.poster_path}`" :alt="movie.name">
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -36,21 +83,22 @@
     align-items: start;
     flex-direction: column;
     gap: 30px;
-    padding: 50px;
+    padding: 150px 75px 0;
   }
 
   .mainHome .titleHome{
     text-align: center;
     font-size: 40px;
-    max-width: 45dvw;
+    max-width: 40dvw;
+    color: #fff;
   }
 
   .mainHome .descriptionHome{
     text-align: justify;
     font-size: 16px;
     letter-spacing: 1px;
-    max-width: 45dvw;
-    color: #424242;
+    max-width: 40dvw;
+    color: #ffffff94;
   }
 
   .mainHome .buttonsHome{
@@ -78,4 +126,49 @@
   .mainHome .buttonsHome button:hover{
     transform: translateY(-3.5px);
   }
+
+  .mainHome .carrocelHome{
+    margin: 25px 0 0 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .mainHome .carrocelHome .carrocelTitle{
+    font-size: 17px;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .mainHome .carrocelHome .carrocelProduct {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 30px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; 
+  width: 1800px;
+  height: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin; /* Barra de rolagem fina */
+  scrollbar-color: transparent transparent;
+}
+
+.mainHome .carrocelHome .carrocelProduct .product {
+  flex: 0 0 auto;
+  width: 300px;
+  height: 200px;
+  border-radius: 12px;
+  border: 1px solid #fff;
+}
+
+.mainHome .carrocelHome .carrocelProduct .product img {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+
 </style>
