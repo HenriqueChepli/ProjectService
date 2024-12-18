@@ -1,59 +1,51 @@
 <template>
-  <div class="container">
-    <div id="banner">
-      <video src=""></video>
+  <div>
+    <div class="banner">
+      <video src="" autoplay muted loop></video>
+      <div class="mainHome">
+        <div class="titleHome">
+          <h1>Pod Ler Podcast</h1>
+        </div>
+        <div class="descriptionHome">
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, excepturi molestiae. Vel
+            velit minima officiis culpa, voluptas similique dolorum omnis porro vitae totam repellat
+            consectetur provident quam reiciendis adipisci molestias.
+          </p>
+        </div>
+        <div class="buttonsHome">
+          <button><img src="../assets/img/botao-play.png" alt="Play" />Play</button>
+          <button><img src="../assets/img/more-information.png" alt="Mais Info" />Mais Info</button>
+        </div>
+      </div>
     </div>
-    <div class="mainHome">
-      <div class="titleHome">
-        <h1>Bensa StreetWear Vai Se Fuder Alessandra</h1>
-      </div>
-      <div class="descriptionHome">
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, excepturi molestiae. Vel
-          velit minima officiis culpa, voluptas similique dolorum omnis porro vitae totam repellat
-          consectetur provident quam reiciendis adipisci molestias.
-        </p>
-      </div>
-      <div class="buttonsHome">
-        <button><img src="#" alt=">" />Play</button>
-        <button><img src="#" alt="#" />Mais Info</button>
-      </div>
-      <!-- Header -->
-      <header>
+    <div class="container">
+      <header class="explore-header">
         <h1>Explorar Programas de TV</h1>
-        <p>Escolha um gênero para filtrar os programas.</p>
+        <p>Escolha um gênero para filtrar os programas e encontrar algo interessante!</p>
       </header>
-
-      <!-- Filtro com Select -->
       <section class="filter-section">
         <label for="genreSelect">Filtrar por Gênero:</label>
-        <select id="genreSelect" v-model="selectedGenre" @change="onGenreChange">
-          <option value="" disabled>Selecione um gênero</option>
-          <option v-for="genre in genres" :key="genre.id" :value="genre.id">
-            {{ genre.name }}
-          </option>
-        </select>
+        <div class="select-wrapper">
+          <select id="genreSelect" v-model="selectedGenre" @change="onGenreChange">
+            <option value="" disabled>Selecione um gênero</option>
+            <option v-for="genre in genres" :key="genre.id" :value="genre.id">
+              {{ genre.name }}
+            </option>
+          </select>
+        </div>
       </section>
-
-      <!-- Loading -->
       <div v-if="isLoading && tvs.length === 0" class="loading">
         <p>Carregando...</p>
       </div>
-
-      <!-- Lista de Programas -->
       <section v-else class="tv-section">
         <h2>
           {{ selectedGenreName ? `Programas de TV: ${selectedGenreName}` : 'Programas de TV' }}
         </h2>
         <div class="tv-grid">
           <div v-for="tv in tvs" :key="tv.id" class="tv-card">
-            <!-- Imagem com Hover -->
             <img
-              :src="
-                tv.poster_path
-                  ? `https://image.tmdb.org/t/p/w780${tv.poster_path}`
-                  : 'https://via.placeholder.com/342x513?text=Sem+Imagem'
-              "
+              :src="tv.poster_path ? `https://image.tmdb.org/t/p/w780${tv.poster_path}` : 'https://via.placeholder.com/342x513?text=Sem+Imagem'"
               :alt="tv.name"
               loading="lazy"
             />
@@ -73,40 +65,39 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import api from '../plugins/axios'
+import { ref, onMounted } from 'vue';
+import api from '../plugins/axios';
 
-const genres = ref([])
-const tvs = ref([])
-const selectedGenre = ref(null)
-const selectedGenreName = ref('')
-const page = ref(1)
-const isLoading = ref(false)
-const isLoadingMore = ref(false)
-let isFetching = false // Flag para evitar múltiplas chamadas simultâneas
+const genres = ref([]);
+const tvs = ref([]);
+const selectedGenre = ref(null);
+const selectedGenreName = ref('');
+const page = ref(1);
+const isLoading = ref(false);
+const isLoadingMore = ref(false);
+let isFetching = false;
 
-// Carrega os gêneros ao iniciar
 onMounted(async () => {
   try {
     const response = await api.get('genre/tv/list', {
       params: { language: 'pt-BR' },
-    })
-    genres.value = response.data.genres
+    });
+    genres.value = response.data.genres;
   } catch (error) {
-    console.error('Erro ao carregar os gêneros:', error)
+    console.error('Erro ao carregar os gêneros:', error);
   }
-})
+});
 
-// Carrega programas de TV
 const loadTvShows = async (genreId, reset = false) => {
-  if (isFetching) return // Impede carregamentos simultâneos
-  isFetching = true
+  if (isFetching) return;
+  isFetching = true;
+
   if (reset) {
-    tvs.value = []
-    page.value = 1
-    isLoading.value = true
+    tvs.value = [];
+    page.value = 1;
+    isLoading.value = true;
   } else {
-    isLoadingMore.value = true
+    isLoadingMore.value = true;
   }
 
   try {
@@ -116,157 +107,171 @@ const loadTvShows = async (genreId, reset = false) => {
         language: 'pt-BR',
         page: page.value,
       },
-    })
-    tvs.value = reset ? response.data.results : [...tvs.value, ...response.data.results]
-    page.value++
+    });
+    tvs.value = reset ? response.data.results : [...tvs.value, ...response.data.results];
+    page.value++;
   } catch (error) {
-    console.error('Erro ao carregar programas de TV:', error)
+    console.error('Erro ao carregar programas de TV:', error);
   } finally {
-    isLoading.value = false
-    isLoadingMore.value = false
-    isFetching = false
+    isLoading.value = false;
+    isLoadingMore.value = false;
+    isFetching = false;
   }
-}
+};
 
-// Reseta a lista ao mudar de gênero
 const onGenreChange = () => {
-  const selected = genres.value.find((g) => g.id === selectedGenre.value)
-  selectedGenreName.value = selected ? selected.name : ''
-  loadTvShows(selectedGenre.value, true)
-}
+  const selected = genres.value.find((g) => g.id === selectedGenre.value);
+  selectedGenreName.value = selected ? selected.name : '';
+  loadTvShows(selectedGenre.value, true);
+};
 
-// Formata data
-const formatDate = (date) => {
-  return date ? new Date(date).toLocaleDateString('pt-BR') : 'N/A'
-}
+const formatDate = (date) => (date ? new Date(date).toLocaleDateString('pt-BR') : 'N/A');
 
-// Scroll Infinito
 window.addEventListener('scroll', () => {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-    loadTvShows(selectedGenre.value)
+    loadTvShows(selectedGenre.value);
   }
-})
+});
 </script>
 
 <style scoped>
-/* Container principal */
-.container {
-  font-family: 'Arial', sans-serif;
-  width: 100%;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-#banner {
-  position: absolute;
+
+body {
+  font-family: 'Arial', sans-serif;
+}
+
+.banner {
+  position: relative;
   width: 100%;
-  height: 80dvh;
+  height: 80vh;
+  overflow: hidden;
+}
+
+.banner video {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
 .mainHome {
   position: absolute;
+  top: 50%;
+  left: 20%;
+  transform: translate(-50%, -50%);
   display: flex;
-  justify-content: center;
-  align-items: start;
   flex-direction: column;
-  gap: 30px;
-  padding: 150px 75px 0;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+  z-index: 10;
+  color: white;
 }
 
-.mainHome .titleHome {
-  text-align: center;
-  font-size: 40px;
-  max-width: 40dvw;
+.titleHome h1 {
+  font-size: 5rem;
+}
+
+.descriptionHome p {
+  font-size: 1rem;
+  color: #ffffffb3;
+  max-width: 600px;
+  line-height: 2.0;
+}
+
+.buttonsHome {
+  display: flex;
+  gap: 1rem;
+}
+
+.buttonsHome button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #0d0d0d;
+  color: #fff;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.buttonsHome button:hover {
+  transform: translateY(-3px);
+}
+
+.container {
+  padding: 3rem;
+  background-color: #121212;
   color: #fff;
 }
 
-.mainHome .descriptionHome {
-  text-align: justify;
-  font-size: 16px;
-  letter-spacing: 1px;
-  max-width: 40dvw;
-  color: #ffffff94;
-}
-
-.mainHome .buttonsHome {
-  display: flex;
-  gap: 30px;
-}
-
-.mainHome .buttonsHome button {
-  display: flex;
-  gap: 7px;
-  background-color: #313131;
-  color: #fff;
-  padding: 10px 20px;
-  font-size: 20px;
-  border-radius: 5px;
-  transition: all 0.45s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.mainHome .buttonsHome button:nth-child(1) {
-  background: #fff;
-  color: #000;
-}
-
-.mainHome .buttonsHome button:hover {
-  transform: translateY(-3.5px);
-}
-
-header {
-  text-align: center;
+.explore-header {
   margin-bottom: 2rem;
+  text-align: center;
 }
 
-header h1 {
+.explore-header h1 {
   font-size: 2.5rem;
-  color: #ffff;
+  color: #fff;
 }
 
-header p {
+.explore-header p {
   font-size: 1.1rem;
-  color: #ffff;
+  color: #aaa;
 }
 
-/* Filtro */
 .filter-section {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 2rem;
 }
 
-select {
-  width: 100%;
-  max-width: 300px;
-  padding: 0.8rem;
-  font-size: 1rem;
-  border: 1px solid #ffff;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
+.filter-section label {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-right: 1rem;
 }
 
-/* TV Grid */
-.tv-section h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 2rem;
+.select-wrapper {
+  position: relative;
+}
+
+select {
+  padding: 1rem;
+  font-size: 1.2rem;
+  border-radius: 0.5rem;
+  border: 1px solid #fff;
+  background-color: #1c1c1c;
+  color: #fff;
+  cursor: pointer;
+  width: 250px;
+  transition: border-color 0.3s;
+}
+
+select:hover {
+  border-color: #f0b400;
 }
 
 .tv-grid {
   display: grid;
-  grid-template-columns: repeat(4, 342px);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 2fr));
   gap: 1.5rem;
-  justify-content: center;
 }
 
 .tv-card {
   position: relative;
-  width: 342px;
-  height: 513px;
-  border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s;
 }
 
 .tv-card img {
@@ -286,38 +291,22 @@ select {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
-  color: #ffff;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
-  padding: 1rem;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s;
 }
 
 .tv-card:hover .tv-overlay {
   opacity: 1;
 }
 
-.tv-overlay h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.tv-overlay p {
-  font-size: 1rem;
-  line-height: 1.4;
-  margin: 0.2rem 0;
-}
-
-/* Loading */
 .loading,
 .loading-more {
   text-align: center;
-  font-size: 1.2rem;
-  color: #ffff;
+  color: #fff;
   margin-top: 1.5rem;
 }
 </style>
