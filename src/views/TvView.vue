@@ -4,13 +4,13 @@
       <video src="" autoplay muted loop></video>
       <div class="mainHome">
         <div class="titleHome">
-          <h1>Pod Ler Podcast</h1>
+          <h1>PODLER PODCAST</h1>
         </div>
         <div class="descriptionHome">
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, excepturi molestiae. Vel
-            velit minima officiis culpa, voluptas similique dolorum omnis porro vitae totam repellat
-            consectetur provident quam reiciendis adipisci molestias.
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, excepturi molestiae.
+            Vel velit minima officiis culpa, voluptas similique dolorum omnis porro vitae totam
+            repellat consectetur provident quam reiciendis adipisci molestias.
           </p>
         </div>
         <div class="buttonsHome">
@@ -19,9 +19,9 @@
         </div>
       </div>
     </div>
+
     <div class="container">
       <div class="layout">
-        <!-- Select à direita -->
         <section class="filter-section">
           <label for="genreSelect">Filtrar por Gênero:</label>
           <div class="select-wrapper">
@@ -33,17 +33,13 @@
             </select>
           </div>
         </section>
-
-        <!-- Explorar Programas centralizado -->
         <header class="explore-header">
-          <h1> {{ selectedGenreName ? `Programas de TV: ${selectedGenreName}` : 'Programas de TV' }}</h1>
+          <h1>
+            {{ selectedGenreName ? ` ${selectedGenreName}` : 'Programas de Tv:' }}
+          </h1>
         </header>
-
-        <!-- Nome do gênero à direita -->
         <div class="genre-info">
-          <h2>
-           
-          </h2>
+          <h2></h2>
         </div>
       </div>
 
@@ -54,7 +50,11 @@
         <div class="tv-grid">
           <div v-for="tv in tvs" :key="tv.id" class="tv-card">
             <img
-              :src="tv.poster_path ? `https://image.tmdb.org/t/p/w780${tv.poster_path}` : 'https://via.placeholder.com/342x513?text=Sem+Imagem'"
+              :src="
+                tv.poster_path
+                  ? `https://image.tmdb.org/t/p/w780${tv.poster_path}`
+                  : 'https://via.placeholder.com/342x513?text=Sem+Imagem'
+              "
               :alt="tv.name"
               loading="lazy"
             />
@@ -74,39 +74,39 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import api from '../plugins/axios';
+import { ref, onMounted } from 'vue'
+import api from '../plugins/axios'
 
-const genres = ref([]);
-const tvs = ref([]);
-const selectedGenre = ref(null);
-const selectedGenreName = ref('');
-const page = ref(1);
-const isLoading = ref(false);
-const isLoadingMore = ref(false);
-let isFetching = false;
+const genres = ref([])
+const tvs = ref([])
+const selectedGenre = ref(null)
+const selectedGenreName = ref('')
+const page = ref(1)
+const isLoading = ref(false)
+const isLoadingMore = ref(false)
+let isFetching = false
 
 onMounted(async () => {
   try {
     const response = await api.get('genre/tv/list', {
       params: { language: 'pt-BR' },
-    });
-    genres.value = response.data.genres;
+    })
+    genres.value = response.data.genres
   } catch (error) {
-    console.error('Erro ao carregar os gêneros:', error);
+    console.error('Erro ao carregar os gêneros:', error)
   }
-});
+})
 
 const loadTvShows = async (genreId, reset = false) => {
-  if (isFetching) return;
-  isFetching = true;
+  if (isFetching) return
+  isFetching = true
 
   if (reset) {
-    tvs.value = [];
-    page.value = 1;
-    isLoading.value = true;
+    tvs.value = []
+    page.value = 1
+    isLoading.value = true
   } else {
-    isLoadingMore.value = true;
+    isLoadingMore.value = true
   }
 
   try {
@@ -116,31 +116,31 @@ const loadTvShows = async (genreId, reset = false) => {
         language: 'pt-BR',
         page: page.value,
       },
-    });
-    tvs.value = reset ? response.data.results : [...tvs.value, ...response.data.results];
-    page.value++;
+    })
+    tvs.value = reset ? response.data.results : [...tvs.value, ...response.data.results]
+    page.value++
   } catch (error) {
-    console.error('Erro ao carregar programas de TV:', error);
+    console.error('Erro ao carregar programas de TV:', error)
   } finally {
-    isLoading.value = false;
-    isLoadingMore.value = false;
-    isFetching = false;
+    isLoading.value = false
+    isLoadingMore.value = false
+    isFetching = false
   }
-};
+}
 
 const onGenreChange = () => {
-  const selected = genres.value.find((g) => g.id === selectedGenre.value);
-  selectedGenreName.value = selected ? selected.name : '';
-  loadTvShows(selectedGenre.value, true);
-};
+  const selected = genres.value.find((g) => g.id === selectedGenre.value)
+  selectedGenreName.value = selected ? selected.name : ''
+  loadTvShows(selectedGenre.value, true)
+}
 
-const formatDate = (date) => (date ? new Date(date).toLocaleDateString('pt-BR') : 'N/A');
+const formatDate = (date) => (date ? new Date(date).toLocaleDateString('pt-BR') : 'N/A')
 
 window.addEventListener('scroll', () => {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-    loadTvShows(selectedGenre.value);
+    loadTvShows(selectedGenre.value)
   }
-});
+})
 </script>
 
 <style scoped>
@@ -189,7 +189,7 @@ body {
   font-size: 1rem;
   color: #ffffffb3;
   max-width: 600px;
-  line-height: 2.0;
+  line-height: 2;
 }
 
 .buttonsHome {
@@ -221,27 +221,23 @@ body {
   color: #fff;
 }
 
-/* Layout atualizado */
 .layout {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 17rem;
+  gap: 5rem;
 }
 
 .filter-section {
+  position: absolute;
+  top: 90%;
+  left: 5%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-left: 30px; /* Move o select 30px para a direita */
+  gap: 0.5rem;
 }
 
-.filter-section label {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-}
-
-/* Estilo do select */
 .select-wrapper select {
   padding: 0.8rem;
   font-size: 1rem;
@@ -251,15 +247,14 @@ body {
   cursor: pointer;
   width: 250px;
   transition: all 0.3s;
-  appearance: none; /* Remove estilos nativos do navegador */
+  appearance: none;
 }
-
 .select-wrapper {
   position: relative;
 }
 
 .select-wrapper:after {
-  content: '▼'; /* Ícone de seta para baixo */
+  content: '▼';
   position: absolute;
   right: 1rem;
   top: 50%;
@@ -268,24 +263,23 @@ body {
   pointer-events: none;
 }
 
-/* Evita que o navegador tente ajustar o dropdown para cima */
 select:focus {
-  overflow: visible; /* Garante que ele se expanda */
+  overflow: visible;
 }
 
-select optgroup, select option {
-  direction: ltr; /* Mantém alinhamento correto */
+select optgroup,
+select option {
+  direction: ltr;
 }
 
-/* Explorar Programas centralizado */
+
 .explore-header {
   text-align: center;
-  font-size: 2.5rem;
+  font-size: 3rem;
   color: #fff;
-  margin-top: 2rem;
+  margin-top: -30px;
 }
 
-/* Grade de programas */
 .tv-grid {
   display: grid;
   grid-template-columns: repeat(4, 342px);

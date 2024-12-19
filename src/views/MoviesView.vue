@@ -4,7 +4,7 @@
       <video src="" autoplay muted loop></video>
       <div class="mainHome">
         <div class="titleHome">
-          <h1>Filmes</h1>
+          <h1>BENSA STREETWEAR</h1>
         </div>
         <div class="descriptionHome">
           <p>
@@ -19,7 +19,6 @@
     </div>
     <div class="container">
       <div class="layout">
-        <!-- Select para filtrar por Gênero de Filme -->
         <section class="filter-section">
           <label for="genreSelect">Filtrar por Gênero:</label>
           <div class="select-wrapper">
@@ -32,9 +31,9 @@
           </div>
         </section>
 
-        <!-- Explorar Filmes centralizado -->
+    
         <header class="explore-header">
-          <h1> {{ selectedGenreName ? `Filmes: ${selectedGenreName}` : 'Filmes' }}</h1>
+          <h1> {{ selectedGenreName ? `${selectedGenreName}` : 'Filmes' }}</h1>
         </header>
       </div>
 
@@ -151,6 +150,13 @@ body {
   height: 80vh;
   overflow: hidden;
 }
+.divider {
+  height: 2px;
+  background-color: #444;
+  top: 50%;
+  border-radius: 1px;
+}
+
 
 .banner video {
   width: 100%;
@@ -212,23 +218,36 @@ body {
   color: #fff;
 }
 
-/* Layout atualizado */
 .layout {
   display: flex;
-  justify-content: space-between; /* Garante que o select fique à esquerda e o título ao centro */
+  justify-content: space-between; 
   align-items: center;
-  gap: 1rem; /* Ajuste o espaçamento conforme necessário */
+  gap: 1rem; 
 }
 
-/* Seção do filtro */
+
+.explore-header {
+  position: absolute;
+  top: 92%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 2.5rem;
+  color: #fff;
+  z-index: 2;
+}
+
+
 .filter-section {
+  position: absolute;
+  top: 90%;
+  left: 5%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Mantém o select colado à esquerda */
-  margin-left: 0; /* Ajuste conforme necessário */
+  align-items: flex-start;
+  gap: 0.5rem;
 }
 
-/* Estilo do select */
 .select-wrapper select {
   padding: 0.8rem;
   font-size: 1rem;
@@ -238,22 +257,14 @@ body {
   cursor: pointer;
   width: 250px;
   transition: all 0.3s;
-  appearance: none; /* Remove estilos nativos do navegador */
-}
-
-/* Explorar Filmes centralizado */
-.explore-header {
-  text-align: center;
-  font-size: 2.5rem;
-  color: #fff;
-  flex-grow: 1; /* Isso ajuda a centralizar o título, ocupando o espaço disponível */
+  appearance: none;
 }
 .select-wrapper {
   position: relative;
 }
 
 .select-wrapper:after {
-  content: '▼'; /* Ícone de seta para baixo */
+  content: '▼'; 
   position: absolute;
   right: 1rem;
   top: 50%;
@@ -262,30 +273,28 @@ body {
   pointer-events: none;
 }
 
-/* Evita que o navegador tente ajustar o dropdown para cima */
 select:focus {
-  overflow: visible; /* Garante que ele se expanda */
+  overflow: visible; 
 }
 
 select optgroup, select option {
-  direction: ltr; /* Mantém alinhamento correto */
+  direction: ltr; 
 }
 
-/* Explorar Filmes centralizado */
 .explore-header {
   text-align: center;
-  font-size: 2.5rem;
+  font-size: 3rem;
   color: #fff;
   margin-top: 2rem;
 }
 
-/* Grid de filmes */
+
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(4, 342px);
   justify-content: center;
   gap: 1rem;
-  margin-top: 100px;
+  margin-top: 150px;
 }
 
 .movie-card {
