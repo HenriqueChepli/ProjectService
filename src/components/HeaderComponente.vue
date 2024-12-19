@@ -6,97 +6,12 @@
        <router-link to="/tv" class="nav-link">Programas de TV</router-link>
  
        <div class="search-bar">
-         <input
-           type="text"
-           v-model="searchQuery"
-           @input="onSearch"
-           placeholder="Pesquisar"
-         />
+         <input type="text" placeholder="Pesquisar"/>
        </div>
      </nav>
- 
-     <div v-if="searchQuery && filteredMovies.length > 0" class="movie-section">
-       <header class="explore-header">
-         <h1>Resultados para: "{{ searchQuery }}"</h1>
-       </header>
-       <div class="movie-grid">
-         <div v-for="movie in filteredMovies" :key="movie.id" class="movie-card">
-           <img
-             :src="movie.poster_path ? `https://image.tmdb.org/t/p/w780${movie.poster_path}` : 'https://via.placeholder.com/342x513?text=Sem+Imagem'"
-             :alt="movie.title"
-             loading="lazy"
-           />
-           <div class="movie-overlay">
-             <h3>{{ movie.title }}</h3>
-             <p>Data de Lançamento: {{ formatDate(movie.release_date) }}</p>
-             <p>Avaliação: {{ movie.vote_average.toFixed(1) }}/10</p>
-           </div>
-         </div>
-       </div>
-       <button class="loadMore" v-if="hasMoreResults" @click="loadMoreMovies"><img src="../assets/img/reload.png" alt=""></button>
-     </div>
- 
-     <div v-else-if="searchQuery && filteredMovies.length === 0" class="no-results">
-       <p>Nenhum resultado encontrado para: "{{ searchQuery }}"</p>
-     </div>
-   </header>
+     </header>
  </template>
  
- <script setup>
- import { ref, onMounted } from 'vue';
- import api from '../plugins/axios';
- import { debounce } from 'lodash';
- 
- const searchQuery = ref('');
- const movies = ref([]);
- const filteredMovies = ref([]);
- const currentPage = ref(1);
- const isLoading = ref(false);
- const hasMoreResults = ref(true);
- 
- const loadMovies = async (query = '', page = 1) => {
-   if (isLoading.value) return;
- 
-   isLoading.value = true;
-   try {
-     const response = await api.get('movie/popular', {
-       params: {
-         language: 'pt-BR',
-         page: page,
-         query: query,
-       },
-     });
-     const results = response.data.results;
-     if (results.length > 0) {
-       movies.value = page === 1 ? results : [...movies.value, ...results];
-       filteredMovies.value = movies.value;
-       hasMoreResults.value = results.length > 0;
-     }
-   } catch (error) {
-     console.error('Erro ao carregar filmes:', error);
-   } finally {
-     isLoading.value = false;
-   }
- };
- 
- const onSearch = debounce(() => {
-   currentPage.value = 1;
-   loadMovies(searchQuery.value, currentPage.value);
- }, 500);
- 
- const loadMoreMovies = () => {
-   if (isLoading.value) return;
- 
-   currentPage.value += 1;
-   loadMovies(searchQuery.value, currentPage.value);
- };
- 
- const formatDate = (date) => (date ? new Date(date).toLocaleDateString('pt-BR') : 'N/A');
- 
- onMounted(() => {
-   loadMovies();
- });
- </script>
  
  <style scoped>
  header {
@@ -158,15 +73,7 @@
    width: 250px;
  }
  
- .movie-section {
-   padding: 2rem 50px;
-   background-color: #121212;
-   color: white;
-   min-height: 100vh; /* Garante que ocupe toda a altura da tela */
-   display: flex;
-   flex-direction: column;
-   justify-content: flex-start;
- }
+
  
  .explore-header {
    text-align: center;
@@ -176,65 +83,6 @@
    margin-top: 6rem;
  }
  
- .movie-grid {
-   display: grid;
-   grid-template-columns: repeat(auto-fill, minmax(342px, 1fr)); /* Responsivo, ajustando o número de colunas conforme a tela */
-   justify-content: center;
-   gap: 1rem;
-   width: 100%;
- }
  
- .movie-card {
-   position: relative;
-   overflow: hidden;
-   border-radius: 0.5rem;
-   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-   transition: transform 0.3s;
- }
- 
- .movie-card img {
-   width: 100%; /* Ajusta o tamanho da imagem para se adaptar ao container */
-   height: 500px;
-   object-fit: cover;
- }
- 
- .movie-card:hover {
-   transform: scale(1.05);
- }
- 
- .movie-overlay {
-   position: absolute;
-   top: 0;
-   left: 0;
-   width: 100%;
-   height: 100%;
-   background: rgba(0, 0, 0, 0.7);
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
-   opacity: 0;
-   transition: opacity 0.3s;
- }
- 
- .movie-card:hover .movie-overlay {
-   opacity: 1;
- }
- 
- .no-results {
-   text-align: center;
-   color: white;
-   font-size: 1.5rem;
- }
- 
- .loadMore {
-   align-items: center;
-   display: flex;
-   justify-content: center;
-   margin: auto;
-   cursor: pointer;
-   background-color: #121212;
-   padding: 50px;
- }
  </style>
  
