@@ -35,7 +35,7 @@
         </section>
         <header class="explore-header">
           <h1>
-            {{ selectedGenreName ? ` ${selectedGenreName}` : 'Programas de Tv:' }}
+            {{ selectedGenreName ? ` ${selectedGenreName}` : 'Programas de Tv' }}
           </h1>
         </header>
         <div class="genre-info">
@@ -230,7 +230,7 @@ body {
 
 .filter-section {
   position: absolute;
-  top: 90%;
+  top: 83%;
   left: 5%;
   display: flex;
   flex-direction: column;
@@ -285,7 +285,7 @@ select option {
   grid-template-columns: repeat(4, 342px);
   justify-content: center;
   gap: 1rem;
-  margin-top: 100px;
+  margin-top: 50px;
 }
 
 .tv-card {
