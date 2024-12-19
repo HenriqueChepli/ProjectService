@@ -4,60 +4,60 @@
       <video src="" autoplay muted loop></video>
       <div class="mainHome">
         <div class="titleHome">
-          <h1>Pod Ler Podcast</h1>
+          <h1>Filmes</h1>
         </div>
         <div class="descriptionHome">
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, excepturi molestiae. Vel
-            velit minima officiis culpa, voluptas similique dolorum omnis porro vitae totam repellat
-            consectetur provident quam reiciendis adipisci molestias.
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam eaque, praesentium rerum cupiditate saepe, blanditiis nulla aut ut perferendis dignissimos dolorum voluptate? Omnis odio inventore consectetur, architecto aut quam fugit.
           </p>
         </div>
         <div class="buttonsHome">
-          <button><img src="../assets/img/botao-play.png" alt="Play" />Play</button>
+          <button><img src="../assets/img/botao-play.png" alt="Play" />Assistir</button>
           <button><img src="../assets/img/more-information.png" alt="Mais Info" />Mais Info</button>
         </div>
       </div>
     </div>
     <div class="container">
-      <header class="explore-header">
-        <h1>Explorar Programas de TV</h1>
-        <p>Escolha um gênero para filtrar os programas e encontrar algo interessante!</p>
-      </header>
-      <section class="filter-section">
-        <div class="select-wrapper">
+      <div class="layout">
+        <!-- Select para filtrar por Gênero de Filme -->
+        <section class="filter-section">
           <label for="genreSelect">Filtrar por Gênero:</label>
-          <select id="genreSelect" v-model="selectedGenre" @change="onGenreChange">
-            <option value="" disabled>Selecione um gênero</option>
-            <option v-for="genre in genres" :key="genre.id" :value="genre.id">
-              {{ genre.name }}
-            </option>
-          </select>
-        </div>
-      </section>
-      <div v-if="isLoading && tvs.length === 0" class="loading">
+          <div class="select-wrapper">
+            <select id="genreSelect" v-model="selectedGenre" @change="onGenreChange">
+              <option value="" disabled>Selecione um gênero</option>
+              <option v-for="genre in genres" :key="genre.id" :value="genre.id">
+                {{ genre.name }}
+              </option>
+            </select>
+          </div>
+        </section>
+
+        <!-- Explorar Filmes centralizado -->
+        <header class="explore-header">
+          <h1> {{ selectedGenreName ? `Filmes: ${selectedGenreName}` : 'Filmes' }}</h1>
+        </header>
+      </div>
+
+      <div v-if="isLoading && movies.length === 0" class="loading">
         <p>Carregando...</p>
       </div>
-      <section v-else class="tv-section">
-        <h2>
-          {{ selectedGenreName ? `Programas de TV: ${selectedGenreName}` : 'Programas de TV' }}
-        </h2>
-        <div class="tv-grid">
-          <div v-for="tv in tvs" :key="tv.id" class="tv-card">
+      <section v-else class="movie-section">
+        <div class="movie-grid">
+          <div v-for="movie in movies" :key="movie.id" class="movie-card">
             <img
-              :src="tv.poster_path ? `https://image.tmdb.org/t/p/w780${tv.poster_path}` : 'https://via.placeholder.com/342x513?text=Sem+Imagem'"
-              :alt="tv.name"
+              :src="movie.poster_path ? `https://image.tmdb.org/t/p/w780${movie.poster_path}` : 'https://via.placeholder.com/342x513?text=Sem+Imagem'"
+              :alt="movie.title"
               loading="lazy"
             />
-            <div class="tv-overlay">
-              <h3>{{ tv.name }}</h3>
-              <p>Data de Lançamento: {{ formatDate(tv.first_air_date) }}</p>
-              <p>Avaliação: {{ tv.vote_average.toFixed(1) }}/10</p>
+            <div class="movie-overlay">
+              <h3>{{ movie.title }}</h3>
+              <p>Data de Lançamento: {{ formatDate(movie.release_date) }}</p>
+              <p>Avaliação: {{ movie.vote_average.toFixed(1) }}/10</p>
             </div>
           </div>
         </div>
         <div v-if="isLoadingMore" class="loading-more">
-          <p>Carregando mais programas...</p>
+          <p>Carregando mais filmes...</p>
         </div>
       </section>
     </div>
@@ -69,7 +69,7 @@ import { ref, onMounted } from 'vue';
 import api from '../plugins/axios';
 
 const genres = ref([]);
-const tvs = ref([]);
+const movies = ref([]);
 const selectedGenre = ref(null);
 const selectedGenreName = ref('');
 const page = ref(1);
@@ -79,7 +79,7 @@ let isFetching = false;
 
 onMounted(async () => {
   try {
-    const response = await api.get('genre/tv/list', {
+    const response = await api.get('genre/movie/list', {
       params: { language: 'pt-BR' },
     });
     genres.value = response.data.genres;
@@ -88,12 +88,12 @@ onMounted(async () => {
   }
 });
 
-const loadTvShows = async (genreId, reset = false) => {
+const loadMovies = async (genreId, reset = false) => {
   if (isFetching) return;
   isFetching = true;
 
   if (reset) {
-    tvs.value = [];
+    movies.value = [];
     page.value = 1;
     isLoading.value = true;
   } else {
@@ -101,17 +101,17 @@ const loadTvShows = async (genreId, reset = false) => {
   }
 
   try {
-    const response = await api.get('discover/tv', {
+    const response = await api.get('discover/movie', {
       params: {
         with_genres: genreId,
         language: 'pt-BR',
         page: page.value,
       },
     });
-    tvs.value = reset ? response.data.results : [...tvs.value, ...response.data.results];
+    movies.value = reset ? response.data.results : [...movies.value, ...response.data.results];
     page.value++;
   } catch (error) {
-    console.error('Erro ao carregar programas de TV:', error);
+    console.error('Erro ao carregar filmes:', error);
   } finally {
     isLoading.value = false;
     isLoadingMore.value = false;
@@ -122,14 +122,14 @@ const loadTvShows = async (genreId, reset = false) => {
 const onGenreChange = () => {
   const selected = genres.value.find((g) => g.id === selectedGenre.value);
   selectedGenreName.value = selected ? selected.name : '';
-  loadTvShows(selectedGenre.value, true);
+  loadMovies(selectedGenre.value, true);
 };
 
 const formatDate = (date) => (date ? new Date(date).toLocaleDateString('pt-BR') : 'N/A');
 
 window.addEventListener('scroll', () => {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-    loadTvShows(selectedGenre.value);
+    loadMovies(selectedGenre.value);
   }
 });
 </script>
@@ -212,62 +212,83 @@ body {
   color: #fff;
 }
 
-.explore-header {
-  margin-bottom: 2rem;
-  text-align: center;
+/* Layout atualizado */
+.layout {
+  display: flex;
+  justify-content: space-between; /* Garante que o select fique à esquerda e o título ao centro */
+  align-items: center;
+  gap: 1rem; /* Ajuste o espaçamento conforme necessário */
 }
 
-.explore-header h1 {
-  font-size: 2.5rem;
-  color: #fff;
-}
-
-.explore-header p {
-  font-size: 1.1rem;
-  color: #aaa;
-}
-
+/* Seção do filtro */
 .filter-section {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  gap: 1rem;
+  align-items: flex-start; /* Mantém o select colado à esquerda */
+  margin-left: 0; /* Ajuste conforme necessário */
 }
 
-.select-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-.filter-section label {
-  font-size: 1.1rem;
-  color: #fff;
-}
-
-select {
-  padding: 1rem;
-  font-size: 1.2rem;
+/* Estilo do select */
+.select-wrapper select {
+  padding: 0.8rem;
+  font-size: 1rem;
   border-radius: 0.5rem;
-  border: 1px solid #fff;
   background-color: #1c1c1c;
   color: #fff;
   cursor: pointer;
   width: 250px;
-  transition: border-color 0.3s;
+  transition: all 0.3s;
+  appearance: none; /* Remove estilos nativos do navegador */
 }
 
-select:hover {
-  border-color: #f0b400;
+/* Explorar Filmes centralizado */
+.explore-header {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #fff;
+  flex-grow: 1; /* Isso ajuda a centralizar o título, ocupando o espaço disponível */
+}
+.select-wrapper {
+  position: relative;
 }
 
-.tv-grid {
+.select-wrapper:after {
+  content: '▼'; /* Ícone de seta para baixo */
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+  pointer-events: none;
+}
+
+/* Evita que o navegador tente ajustar o dropdown para cima */
+select:focus {
+  overflow: visible; /* Garante que ele se expanda */
+}
+
+select optgroup, select option {
+  direction: ltr; /* Mantém alinhamento correto */
+}
+
+/* Explorar Filmes centralizado */
+.explore-header {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #fff;
+  margin-top: 2rem;
+}
+
+/* Grid de filmes */
+.movie-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 2fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, 342px);
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 100px;
 }
 
-.tv-card {
+.movie-card {
   position: relative;
   overflow: hidden;
   border-radius: 0.5rem;
@@ -275,17 +296,17 @@ select:hover {
   transition: transform 0.3s;
 }
 
-.tv-card img {
-  width: 100%;
-  height: 100%;
+.movie-card img {
+  width: 342px;
+  height: 500px;
   object-fit: cover;
 }
 
-.tv-card:hover {
+.movie-card:hover {
   transform: scale(1.05);
 }
 
-.tv-overlay {
+.movie-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -300,7 +321,7 @@ select:hover {
   transition: opacity 0.3s;
 }
 
-.tv-card:hover .tv-overlay {
+.movie-card:hover .movie-overlay {
   opacity: 1;
 }
 

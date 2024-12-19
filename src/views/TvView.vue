@@ -20,28 +20,37 @@
       </div>
     </div>
     <div class="container">
-      <header class="explore-header">
-        <h1>Explorar Programas de TV</h1>
-        <p>Escolha um gênero para filtrar os programas e encontrar algo interessante!</p>
-      </header>
-      <section class="filter-section">
-        <label for="genreSelect">Filtrar por Gênero:</label>
-        <div class="select-wrapper">
-          <select id="genreSelect" v-model="selectedGenre" @change="onGenreChange">
-            <option value="" disabled>Selecione um gênero</option>
-            <option v-for="genre in genres" :key="genre.id" :value="genre.id">
-              {{ genre.name }}
-            </option>
-          </select>
+      <div class="layout">
+        <!-- Select à direita -->
+        <section class="filter-section">
+          <label for="genreSelect">Filtrar por Gênero:</label>
+          <div class="select-wrapper">
+            <select id="genreSelect" v-model="selectedGenre" @change="onGenreChange">
+              <option value="" disabled>Selecione um gênero</option>
+              <option v-for="genre in genres" :key="genre.id" :value="genre.id">
+                {{ genre.name }}
+              </option>
+            </select>
+          </div>
+        </section>
+
+        <!-- Explorar Programas centralizado -->
+        <header class="explore-header">
+          <h1> {{ selectedGenreName ? `Programas de TV: ${selectedGenreName}` : 'Programas de TV' }}</h1>
+        </header>
+
+        <!-- Nome do gênero à direita -->
+        <div class="genre-info">
+          <h2>
+           
+          </h2>
         </div>
-      </section>
+      </div>
+
       <div v-if="isLoading && tvs.length === 0" class="loading">
         <p>Carregando...</p>
       </div>
       <section v-else class="tv-section">
-        <h2>
-          {{ selectedGenreName ? `Programas de TV: ${selectedGenreName}` : 'Programas de TV' }}
-        </h2>
         <div class="tv-grid">
           <div v-for="tv in tvs" :key="tv.id" class="tv-card">
             <img
@@ -212,58 +221,77 @@ body {
   color: #fff;
 }
 
-.explore-header {
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.explore-header h1 {
-  font-size: 2.5rem;
-  color: #fff;
-}
-
-.explore-header p {
-  font-size: 1.1rem;
-  color: #aaa;
+/* Layout atualizado */
+.layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 17rem;
 }
 
 .filter-section {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 2rem;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 30px; /* Move o select 30px para a direita */
 }
 
 .filter-section label {
   font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Estilo do select */
+.select-wrapper select {
+  padding: 0.8rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  background-color: #1c1c1c;
   color: #fff;
-  margin-right: 1rem;
+  cursor: pointer;
+  width: 250px;
+  transition: all 0.3s;
+  appearance: none; /* Remove estilos nativos do navegador */
 }
 
 .select-wrapper {
   position: relative;
 }
 
-select {
-  padding: 1rem;
-  font-size: 1.2rem;
-  border-radius: 0.5rem;
-  border: 1px solid #fff;
-  background-color: #1c1c1c;
+.select-wrapper:after {
+  content: '▼'; /* Ícone de seta para baixo */
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
   color: #fff;
-  cursor: pointer;
-  width: 250px;
-  transition: border-color 0.3s;
+  pointer-events: none;
 }
 
-select:hover {
-  border-color: #f0b400;
+/* Evita que o navegador tente ajustar o dropdown para cima */
+select:focus {
+  overflow: visible; /* Garante que ele se expanda */
 }
 
+select optgroup, select option {
+  direction: ltr; /* Mantém alinhamento correto */
+}
+
+/* Explorar Programas centralizado */
+.explore-header {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #fff;
+  margin-top: 2rem;
+}
+
+/* Grade de programas */
 .tv-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 2fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, 342px);
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 100px;
 }
 
 .tv-card {
@@ -275,8 +303,8 @@ select:hover {
 }
 
 .tv-card img {
-  width: 100%;
-  height: 100%;
+  width: 342px;
+  height: 500px;
   object-fit: cover;
 }
 
