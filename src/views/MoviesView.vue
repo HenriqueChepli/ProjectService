@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="banner">
-      <video src="" autoplay muted loop></video>
+      <video src="../assets/img/movie/YouCut_20241220_130412694.mp4" autoplay loop muted></video>
       <div class="mainHome">
         <div class="titleHome">
           <h1>BENSA STREETWEAR</h1>
@@ -43,6 +43,7 @@
       <section v-else class="movie-section">
         <div class="movie-grid">
           <div v-for="movie in movies" :key="movie.id" class="movie-card">
+            <button @click="visualizar('movie', movie.id)">
             <img
               :src="movie.poster_path ? `https://image.tmdb.org/t/p/w780${movie.poster_path}` : 'https://via.placeholder.com/342x513?text=Sem+Imagem'"
               :alt="movie.title"
@@ -53,6 +54,7 @@
               <p>Data de Lançamento: {{ formatDate(movie.release_date) }}</p>
               <p>Avaliação: {{ movie.vote_average.toFixed(1) }}/10</p>
             </div>
+            </button>
           </div>
         </div>
         <div v-if="isLoadingMore" class="loading-more">
@@ -66,6 +68,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import api from '../plugins/axios';
+import { useRouter } from 'vue-router' // Para navegar entre as páginas
 
 const genres = ref([]);
 const movies = ref([]);
@@ -75,6 +78,12 @@ const page = ref(1);
 const isLoading = ref(false);
 const isLoadingMore = ref(false);
 let isFetching = false;
+
+const router = useRouter()
+
+function visualizar(type, id) {
+  router.push(`/${type}/${id}`); // Navega para a página com o tipo e ID
+}
 
 onMounted(async () => {
   try {
@@ -147,7 +156,7 @@ body {
 .banner {
   position: relative;
   width: 100%;
-  height: 80vh;
+  height: 80dvh;
   overflow: hidden;
 }
 .divider {
@@ -200,7 +209,7 @@ body {
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  background-color: #0d0d0d;
+  background-color: transparent;
   color: #fff;
   border: none;
   border-radius: 0.25rem;
@@ -302,7 +311,7 @@ select optgroup, select option {
   overflow: hidden;
   border-radius: 0.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s;
+  transition: all 0.5s ease-in-out;
 }
 
 .movie-card img {
@@ -312,7 +321,7 @@ select optgroup, select option {
 }
 
 .movie-card:hover {
-  transform: scale(1.05);
+  opacity: .5;
 }
 
 .movie-overlay {
@@ -328,6 +337,7 @@ select optgroup, select option {
   align-items: center;
   opacity: 0;
   transition: opacity 0.3s;
+  color: #fff;
 }
 
 .movie-card:hover .movie-overlay {
@@ -339,5 +349,10 @@ select optgroup, select option {
   text-align: center;
   color: #fff;
   margin-top: 1.5rem;
+}
+
+button{
+  background: none;
+  cursor: pointer;
 }
 </style>

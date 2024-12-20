@@ -17,6 +17,13 @@ const routes = [
     name: 'TV',
     component: () => import('../views/TvView.vue'),
   },
+  {
+    path: '/:type/:id',
+    name: 'details',
+    component: () => import('../views/FilmeView.vue'),
+    props: true, // Passa os parâmetros diretamente como props
+  },
+  
 ]
 
 const router = createRouter({

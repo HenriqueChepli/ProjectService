@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import api from '../plugins/axios'
+import { useRouter } from 'vue-router' // Para navegar entre as páginas
 
 // Estados reativos para os carrosséis
 const popularMovies = ref([])
@@ -10,6 +11,13 @@ const topRatedTVShows = ref([])
 
 // URL base para as imagens do TMDB
 const imageBaseUrl = 'https://image.tmdb.org/t/p/w342'
+
+const router = useRouter()
+
+function visualizar(type, id) {
+  router.push(`/${type}/${id}`); // Navega para a página com o tipo e ID
+}
+
 
 onMounted(async () => {
   try {
@@ -31,12 +39,12 @@ onMounted(async () => {
   } catch (error) {
     console.error('Erro ao buscar dados da API TMDB:', error)
   }
-})
+});
 </script>
 <template>
   <main>
     <div id="banner">
-      <video src="#" autoplay loop muted></video>
+      <video src="../assets/img/movie/YouCut_20241220_130412694.mp4" autoplay loop muted></video>
     </div>
     <div class="mainHome">
       <div class="indexHome">
@@ -49,8 +57,8 @@ onMounted(async () => {
           </p>
         </div>
         <div class="buttonsHome">
-          <button><img src="#" alt=">" />Play</button>
-          <button><img src="#" alt="#" />Mais Info</button>
+          <button><img src="../assets/img/botao-play.png" alt="Play" />Assistir</button>
+          <button><img src="../assets/img/more-information.png" alt="Mais Info" />Mais Info</button>
         </div>
       </div>
       <div class="divCarrocels">
@@ -60,20 +68,17 @@ onMounted(async () => {
             <h3>Popular no AlMossar Studios</h3>
           </div>
           <div class="carrocelProduct">
-            <div class="product" v-for="movie in popularMovies" :key="movie.id">
-              <!-- Imagem do pôster -->
+          <div class="product" v-for="movie in popularMovies" :key="movie.id">
+            <button @click="visualizar('movie', movie.id)">
               <img :src="imageBaseUrl + movie.poster_path" :alt="movie.title" />
-              <!-- Descrição do Produto -->
               <div class="descriptionProduct">
                 <h4>{{ movie.title }}</h4>
-                <!-- Nome do filme -->
                 <p>Lançamento: {{ new Date(movie.release_date).toLocaleDateString('pt-BR') }}</p>
-                <!-- Data de lançamento -->
                 <p>Avaliação: {{ movie.vote_average.toFixed(1) }} / 10</p>
-                <!-- Avaliação -->
               </div>
-            </div>
+            </button>
           </div>
+        </div>
         </div>
         <!-- Carrossel: Filmes em Alta -->
         <div class="carrocelHome">
@@ -82,6 +87,7 @@ onMounted(async () => {
           </div>
           <div class="carrocelProduct">
             <div class="product" v-for="movie in trendingMovies" :key="movie.id">
+              <button @click="visualizar('movie', movie.id)">
               <img :src="imageBaseUrl + movie.poster_path" :alt="movie.title" />
               <!-- Descrição do Produto -->
               <div class="descriptionProduct">
@@ -92,6 +98,7 @@ onMounted(async () => {
                 <p>Avaliação: {{ movie.vote_average.toFixed(1) }} / 10</p>
                 <!-- Avaliação -->
               </div>
+              </button>
             </div>
           </div>
         </div>
@@ -103,6 +110,7 @@ onMounted(async () => {
           </div>
           <div class="carrocelProduct">
             <div class="product" v-for="serie in popularSeries" :key="serie.id">
+              <button @click="visualizar('tv', serie.id)">
               <img :src="imageBaseUrl + serie.poster_path" :alt="serie.name" />
               <!-- Descrição do Produto -->
               <div class="descriptionProduct">
@@ -113,6 +121,7 @@ onMounted(async () => {
                 <p>Avaliação: {{ serie.vote_average.toFixed(1) }} / 10</p>
                 <!-- Avaliação -->
               </div>
+              </button>
             </div>
           </div>
         </div>
@@ -123,17 +132,19 @@ onMounted(async () => {
             <h3>Principais Programas de TV</h3>
           </div>
           <div class="carrocelProduct">
-            <div class="product" v-for="tvShow in topRatedTVShows" :key="tvShow.id">
-              <img :src="imageBaseUrl + tvShow.poster_path" :alt="tvShow.name" />
+            <div class="product" v-for="serie in topRatedTVShows" :key="serie.id">
+              <button @click="visualizar('tv', serie.id)">
+              <img :src="imageBaseUrl + serie.poster_path" :alt="serie.name" />
               <!-- Descrição do Produto -->
               <div class="descriptionProduct">
-                <h4>{{ tvShow.name }}</h4>
+                <h4>{{ serie.name }}</h4>
                 <!-- Nome do filme -->
-                <p>Lançamento: {{ new Date(tvShow.first_air_date).toLocaleDateString('pt-BR') }}</p>
+                <p>Lançamento: {{ new Date(serie.first_air_date).toLocaleDateString('pt-BR') }}</p>
                 <!-- Data de lançamento -->
-                <p>Avaliação: {{ tvShow.vote_average.toFixed(1) }} / 10</p>
+                <p>Avaliação: {{ serie.vote_average.toFixed(1) }} / 10</p>
                 <!-- Avaliação -->
               </div>
+              </button>
             </div>
           </div>
         </div>
@@ -168,7 +179,7 @@ main {
   align-items: start;
   flex-direction: column;
   gap: 30px;
-  padding: 0 75px 0;
+  padding: 30px 75px 0 75px;
   z-index: 1;
 }
 
@@ -196,30 +207,27 @@ main {
   color: #ffffff94;
 }
 
-.mainHome .buttonsHome {
+.buttonsHome {
   display: flex;
-  gap: 30px;
+  gap: 1rem;
 }
 
-.mainHome .buttonsHome button {
+.buttonsHome button {
   display: flex;
-  gap: 7px;
-  background-color: #313131;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: transparent;
   color: #fff;
-  padding: 10px 20px;
-  font-size: 20px;
-  border-radius: 5px;
-  transition: all 0.45s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: transform 0.3s;
 }
 
-.mainHome .buttonsHome button:nth-child(1) {
-  background: #fff;
-  color: #000;
-}
-
-.mainHome .buttonsHome button:hover {
-  transform: translateY(-3.5px);
+.buttonsHome button:hover {
+  transform: translateY(-3px);
 }
 
 .mainHome .divCarrocels {
@@ -266,6 +274,11 @@ main {
   transition: all 0.5s;
 }
 
+.mainHome .carrocelHome .carrocelProduct .product button{
+  background: none;
+  cursor: pointer;
+}
+
 .mainHome .carrocelHome .carrocelProduct .product .descriptionProduct {
   width: 100%;
   display: flex;
@@ -287,6 +300,10 @@ main {
 .mainHome .carrocelHome .carrocelProduct .product:hover .descriptionProduct {
   opacity: 1; 
   transform: translateY(0);
+}
+
+.mainHome .carrocelHome .carrocelProduct .product .descriptionProduct h4{
+  font-size: 20px;
 }
 
 .mainHome .carrocelHome .carrocelProduct .product .descriptionProduct p {
