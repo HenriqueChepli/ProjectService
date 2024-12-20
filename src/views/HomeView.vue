@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import api from '../plugins/axios'
+import { useRouter } from 'vue-router' // Para navegar entre as páginas
 
 // Estados reativos para os carrosséis
 const popularMovies = ref([])
@@ -10,6 +11,13 @@ const topRatedTVShows = ref([])
 
 // URL base para as imagens do TMDB
 const imageBaseUrl = 'https://image.tmdb.org/t/p/w342'
+
+const router = useRouter()
+
+function visualizar(type, id) {
+  router.push(`/${type}/${id}`); // Navega para a página com o tipo e ID
+}
+
 
 onMounted(async () => {
   try {
@@ -31,7 +39,7 @@ onMounted(async () => {
   } catch (error) {
     console.error('Erro ao buscar dados da API TMDB:', error)
   }
-})
+});
 </script>
 <template>
   <main>
@@ -60,20 +68,17 @@ onMounted(async () => {
             <h3>Popular no AlMossar Studios</h3>
           </div>
           <div class="carrocelProduct">
-            <div class="product" v-for="movie in popularMovies" :key="movie.id">
-              <!-- Imagem do pôster -->
+          <div class="product" v-for="movie in popularMovies" :key="movie.id">
+            <button @click="visualizar('movie', movie.id)">
               <img :src="imageBaseUrl + movie.poster_path" :alt="movie.title" />
-              <!-- Descrição do Produto -->
               <div class="descriptionProduct">
                 <h4>{{ movie.title }}</h4>
-                <!-- Nome do filme -->
                 <p>Lançamento: {{ new Date(movie.release_date).toLocaleDateString('pt-BR') }}</p>
-                <!-- Data de lançamento -->
                 <p>Avaliação: {{ movie.vote_average.toFixed(1) }} / 10</p>
-                <!-- Avaliação -->
               </div>
-            </div>
+            </button>
           </div>
+        </div>
         </div>
         <!-- Carrossel: Filmes em Alta -->
         <div class="carrocelHome">
@@ -82,6 +87,7 @@ onMounted(async () => {
           </div>
           <div class="carrocelProduct">
             <div class="product" v-for="movie in trendingMovies" :key="movie.id">
+              <button @click="visualizar('movie', movie.id)">
               <img :src="imageBaseUrl + movie.poster_path" :alt="movie.title" />
               <!-- Descrição do Produto -->
               <div class="descriptionProduct">
@@ -92,6 +98,7 @@ onMounted(async () => {
                 <p>Avaliação: {{ movie.vote_average.toFixed(1) }} / 10</p>
                 <!-- Avaliação -->
               </div>
+              </button>
             </div>
           </div>
         </div>
@@ -103,6 +110,7 @@ onMounted(async () => {
           </div>
           <div class="carrocelProduct">
             <div class="product" v-for="serie in popularSeries" :key="serie.id">
+              <button @click="visualizar('tv', serie.id)">
               <img :src="imageBaseUrl + serie.poster_path" :alt="serie.name" />
               <!-- Descrição do Produto -->
               <div class="descriptionProduct">
@@ -113,6 +121,7 @@ onMounted(async () => {
                 <p>Avaliação: {{ serie.vote_average.toFixed(1) }} / 10</p>
                 <!-- Avaliação -->
               </div>
+              </button>
             </div>
           </div>
         </div>
@@ -123,17 +132,19 @@ onMounted(async () => {
             <h3>Principais Programas de TV</h3>
           </div>
           <div class="carrocelProduct">
-            <div class="product" v-for="tvShow in topRatedTVShows" :key="tvShow.id">
-              <img :src="imageBaseUrl + tvShow.poster_path" :alt="tvShow.name" />
+            <div class="product" v-for="serie in topRatedTVShows" :key="serie.id">
+              <button @click="visualizar('tv', serie.id)">
+              <img :src="imageBaseUrl + serie.poster_path" :alt="serie.name" />
               <!-- Descrição do Produto -->
               <div class="descriptionProduct">
-                <h4>{{ tvShow.name }}</h4>
+                <h4>{{ serie.name }}</h4>
                 <!-- Nome do filme -->
-                <p>Lançamento: {{ new Date(tvShow.first_air_date).toLocaleDateString('pt-BR') }}</p>
+                <p>Lançamento: {{ new Date(serie.first_air_date).toLocaleDateString('pt-BR') }}</p>
                 <!-- Data de lançamento -->
-                <p>Avaliação: {{ tvShow.vote_average.toFixed(1) }} / 10</p>
+                <p>Avaliação: {{ serie.vote_average.toFixed(1) }} / 10</p>
                 <!-- Avaliação -->
               </div>
+              </button>
             </div>
           </div>
         </div>
@@ -266,6 +277,11 @@ main {
   transition: all 0.5s;
 }
 
+.mainHome .carrocelHome .carrocelProduct .product button{
+  background: none;
+  cursor: pointer;
+}
+
 .mainHome .carrocelHome .carrocelProduct .product .descriptionProduct {
   width: 100%;
   display: flex;
@@ -287,6 +303,10 @@ main {
 .mainHome .carrocelHome .carrocelProduct .product:hover .descriptionProduct {
   opacity: 1; 
   transform: translateY(0);
+}
+
+.mainHome .carrocelHome .carrocelProduct .product .descriptionProduct h4{
+  font-size: 20px;
 }
 
 .mainHome .carrocelHome .carrocelProduct .product .descriptionProduct p {
