@@ -1,7 +1,7 @@
 <template>
    <header>
      <nav>
-       <router-link to="/" class="nav-title">AlMossar</router-link>
+       <router-link to="/" class="nav-title"><img src="../assets/img/AL MOSSAR STUDIOS.png" alt=""></router-link>
        <router-link to="/filmes" class="nav-link">Filmes</router-link>
        <router-link to="/tv" class="nav-link">Programas de TV</router-link>
  
@@ -20,16 +20,16 @@
    left: 0;
    width: 100%;
    z-index: 1000;
-   background-color: #121212;
-   padding: 1rem;
+   background-color: transparent;
    color: white;
+   backdrop-filter: blur(5px);
+   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
  }
  
  nav {
    display: flex;
    align-items: center;
    justify-content: start;
-   padding: 05px 50px;
  }
  
  .nav-title {
@@ -38,11 +38,15 @@
    color: #fff;
    text-decoration: none;
  }
+
+ .nav-title img{
+  width: 150px;
+ }
  
  .nav-link {
    color: #696969;
    text-decoration: none;
-   font-size: 12px;
+   font-size: 15px;
    font-weight: bold;
    margin: 0 20px;
    transition: all 0.25s ease;
@@ -62,11 +66,11 @@
  }
  
  .search-bar input {
-   padding: 0.25rem;
-   font-size: .9rem;
+   padding: 0.5rem;
+   font-size: 15px;
    border-radius: 0.5rem;
    border: 1px solid #ccc;
-   background-color: #1c1c1c;
+   background-color: transparent;
    color: #fff;
    outline: none;
    width: 250px;

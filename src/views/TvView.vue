@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="banner">
-      <video src="" autoplay muted loop></video>
+      <video src="../assets/img/movie/YouCut_20241220_130412694.mp4" autoplay loop muted></video>
       <div class="mainHome">
         <div class="titleHome">
           <h1>PODLER PODCAST</h1>
@@ -14,7 +14,7 @@
           </p>
         </div>
         <div class="buttonsHome">
-          <button><img src="../assets/img/botao-play.png" alt="Play" />Play</button>
+          <button><img src="../assets/img/botao-play.png" alt="Play" />Assistir</button>
           <button><img src="../assets/img/more-information.png" alt="Mais Info" />Mais Info</button>
         </div>
       </div>
@@ -48,21 +48,23 @@
       </div>
       <section v-else class="tv-section">
         <div class="tv-grid">
-          <div v-for="tv in tvs" :key="tv.id" class="tv-card">
+          <div v-for="serie in tvs" :key="serie.id" class="tv-card">
+            <button @click="visualizar('tv', serie.id)">
             <img
               :src="
-                tv.poster_path
-                  ? `https://image.tmdb.org/t/p/w780${tv.poster_path}`
+                serie.poster_path
+                  ? `https://image.tmdb.org/t/p/w780${serie.poster_path}`
                   : 'https://via.placeholder.com/342x513?text=Sem+Imagem'
               "
-              :alt="tv.name"
+              :alt="serie.name"
               loading="lazy"
             />
             <div class="tv-overlay">
-              <h3>{{ tv.name }}</h3>
-              <p>Data de Lançamento: {{ formatDate(tv.first_air_date) }}</p>
-              <p>Avaliação: {{ tv.vote_average.toFixed(1) }}/10</p>
+              <h3>{{ serie.name }}</h3>
+              <p>Data de Lançamento: {{ formatDate(serie.first_air_date) }}</p>
+              <p>Avaliação: {{ serie.vote_average.toFixed(1) }}/10</p>
             </div>
+            </button>
           </div>
         </div>
         <div v-if="isLoadingMore" class="loading-more">
@@ -76,6 +78,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import api from '../plugins/axios'
+import { useRouter } from 'vue-router' // Para navegar entre as páginas
 
 const genres = ref([])
 const tvs = ref([])
@@ -85,6 +88,13 @@ const page = ref(1)
 const isLoading = ref(false)
 const isLoadingMore = ref(false)
 let isFetching = false
+
+
+const router = useRouter()
+
+function visualizar(type, id) {
+  router.push(`/${type}/${id}`); // Navega para a página com o tipo e ID
+}
 
 onMounted(async () => {
   try {
@@ -203,7 +213,7 @@ body {
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  background-color: #0d0d0d;
+  background-color: transparent;
   color: #fff;
   border: none;
   border-radius: 0.25rem;
@@ -293,7 +303,7 @@ select option {
   overflow: hidden;
   border-radius: 0.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s;
+  transition: all 0.5s ease-in-out;
 }
 
 .tv-card img {
@@ -303,7 +313,7 @@ select option {
 }
 
 .tv-card:hover {
-  transform: scale(1.05);
+  opacity: .5;
 }
 
 .tv-overlay {
@@ -319,6 +329,7 @@ select option {
   align-items: center;
   opacity: 0;
   transition: opacity 0.3s;
+  color: #fff;
 }
 
 .tv-card:hover .tv-overlay {
@@ -330,5 +341,10 @@ select option {
   text-align: center;
   color: #fff;
   margin-top: 1.5rem;
+}
+
+button{
+  background: none;
+  cursor: pointer;
 }
 </style>

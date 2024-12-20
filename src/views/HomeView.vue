@@ -44,7 +44,7 @@ onMounted(async () => {
 <template>
   <main>
     <div id="banner">
-      <video src="#" autoplay loop muted></video>
+      <video src="../assets/img/movie/YouCut_20241220_130412694.mp4" autoplay loop muted></video>
     </div>
     <div class="mainHome">
       <div class="indexHome">
@@ -57,8 +57,8 @@ onMounted(async () => {
           </p>
         </div>
         <div class="buttonsHome">
-          <button><img src="#" alt=">" />Play</button>
-          <button><img src="#" alt="#" />Mais Info</button>
+          <button><img src="../assets/img/botao-play.png" alt="Play" />Assistir</button>
+          <button><img src="../assets/img/more-information.png" alt="Mais Info" />Mais Info</button>
         </div>
       </div>
       <div class="divCarrocels">
@@ -179,7 +179,7 @@ main {
   align-items: start;
   flex-direction: column;
   gap: 30px;
-  padding: 0 75px 0;
+  padding: 30px 75px 0 75px;
   z-index: 1;
 }
 
@@ -207,30 +207,27 @@ main {
   color: #ffffff94;
 }
 
-.mainHome .buttonsHome {
+.buttonsHome {
   display: flex;
-  gap: 30px;
+  gap: 1rem;
 }
 
-.mainHome .buttonsHome button {
+.buttonsHome button {
   display: flex;
-  gap: 7px;
-  background-color: #313131;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: transparent;
   color: #fff;
-  padding: 10px 20px;
-  font-size: 20px;
-  border-radius: 5px;
-  transition: all 0.45s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: transform 0.3s;
 }
 
-.mainHome .buttonsHome button:nth-child(1) {
-  background: #fff;
-  color: #000;
-}
-
-.mainHome .buttonsHome button:hover {
-  transform: translateY(-3.5px);
+.buttonsHome button:hover {
+  transform: translateY(-3px);
 }
 
 .mainHome .divCarrocels {
