@@ -29,7 +29,7 @@
    display: flex;
    align-items: center;
    justify-content: start;
-   padding: 25px 50px;
+   padding: 05px 50px;
  }
  
  .nav-title {
@@ -59,12 +59,11 @@
  .search-bar {
    position: absolute;
    right: 50px;
-   top: 25px;
  }
  
  .search-bar input {
-   padding: 0.5rem;
-   font-size: 1rem;
+   padding: 0.25rem;
+   font-size: .9rem;
    border-radius: 0.5rem;
    border: 1px solid #ccc;
    background-color: #1c1c1c;
@@ -72,17 +71,5 @@
    outline: none;
    width: 250px;
  }
- 
-
- 
- .explore-header {
-   text-align: center;
-   font-size: 2rem;
-   color: white;
-   margin-bottom: 2rem;
-   margin-top: 6rem;
- }
- 
- 
  </style>
  
