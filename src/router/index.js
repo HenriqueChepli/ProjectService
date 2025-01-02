@@ -23,7 +23,11 @@ const routes = [
     component: () => import('../views/FilmeView.vue'),
     props: true, // Passa os parâmetros diretamente como props
   },
-  
+  {
+    path: '/actor',
+    name: 'ActorPage',
+    component: () => import('../views/ActorView.vue'),
+  },
 ]
 
 const router = createRouter({

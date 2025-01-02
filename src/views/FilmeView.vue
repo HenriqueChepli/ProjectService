@@ -20,6 +20,16 @@
             <span>{{ genres }}</span>
           </p>
           <p class="description">{{ item.overview }}</p>
+          <div class="cast">
+            <h2>Elenco</h2>
+            <div class="actors">
+            <div class="actor" v-for="actor in cast" :key="actor.id" @click="goToActor()">
+            <img :src="actor.profile_path ? imageBaseUrl + actor.profile_path : 'placeholder.jpg'" :alt="actor.name" />
+            <p>{{ actor.name }}</p>
+          </div>
+          </div>
+</div>
+
         </div>
       </div>
     </div>
@@ -34,6 +44,13 @@
 import { onMounted, ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import api from '../plugins/axios';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function goToActor() {
+  router.push('.actor');
+}
 
 const route = useRoute();
 const { id } = route.params;
@@ -65,19 +82,27 @@ const genres = computed(() => {
   return 'Gêneros indisponíveis';
 });
 
+const cast = ref([]); // Para armazenar o elenco
+
 onMounted(async () => {
   try {
     const response = await api.get(`${type}/${id}?language=pt-BR`);
     item.value = response.data;
+    
     const videosResponse = await api.get(`${type}/${id}/videos?language=pt-BR`);
     const trailers = videosResponse.data.results.filter(video => video.type === 'Trailer' && video.site === 'YouTube');
     if (trailers.length > 0) {
       trailerUrl.value = `https://www.youtube.com/watch?v=${trailers[0].key}`;
     }
+
+    // Busca o elenco
+    const castResponse = await api.get(`${type}/${id}/credits?language=pt-BR`);
+    cast.value = castResponse.data.cast.slice(0, 10); // Pegue os 10 primeiros atores
   } catch (error) {
-    console.error('Erro ao carregar o filme ou trailer:', error);
+    console.error('Erro ao carregar os dados:', error);
   }
 });
+
 </script>
 
 <style scoped>
@@ -141,7 +166,6 @@ onMounted(async () => {
   flex-direction: column;
   justify-content: center;
   gap: 20px;
-  max-width: 600px;
 }
 
 .title {
@@ -195,5 +219,40 @@ onMounted(async () => {
 .description {
   font-size: 16px;
   line-height: 1.6;
+  max-width: 600px;
 }
+
+.cast {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.actors {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+}
+
+.actors .actor{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.actors .actor img {
+  width: 75px;
+  border-radius: 7px;
+  object-fit: cover;
+}
+
+.actors p {
+  font-size: 16px;
+  color: #fff;
+}
+
 </style>
